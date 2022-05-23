@@ -3,7 +3,7 @@
     --hover: #4CA0A0;
     --white: #EDF6F9;
     --gain: #06d6a0;
-    --spent: #ef476f;
+    --spent: #ef476e;
     --link: #4361ee;
     margin: 0;
     padding: 0;
@@ -14,19 +14,32 @@ body {
     background: var(--white);
 }
 
-.header {
+.margin-top-25 {
+    margin-top: 25px;
+}
+
+.bg-main {
     background-color: var(--main-color);
-    padding: 15px 25px;
+    /*padding: 15px 25px;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 100;*/
 }
 
 .header-img {
     width: 40px;
 }
 
+.nav-btn {
+    margin: 10px;
+}
+
+.nav-item {
+    margin: 20px;
+}
+
 .title {
+    font-size: 32px;
     margin: 0 30px;
     color: var(--white);
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
@@ -42,22 +55,37 @@ body {
 }
 
 .btn-aqua {
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
-    color: var(--white);
     width: 175px;
-    padding: 10px;
-    text-align: justify;
-    margin: 0 10px;
-    border-radius: 20px;
     font-size: 22px;
     font-weight: bold;
+}
+
+#navbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+a {
     text-decoration: none;
 }
 
-button {
+button, .nav-btn {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    padding: 10px;
+    margin: 0 10px;
     border: none;
     outline: none;
     background-color: transparent;
+    color: var(--white);
+    box-shadow: 0px 0px 11px 4px rgba(0, 0, 0, 0.15);
+    min-width: 75px;
+    text-align: center;
+}
+
+button:hover, .nav-btn:hover {
+    transform: scale(1.05);
+    transition: 300ms;
 }
 
 .btn-aqua:hover {
@@ -69,15 +97,17 @@ button {
     background-color: var(--hover);
 }
 
+
 .container {
+    margin: 0;
     border-radius: 20px;
     padding: 40px 20px;
+    width: 100%;
     box-shadow: 0px 0px 11px 4px rgba(0, 0, 0, 0.15);
-    max-width: 60vw;
 }
 
 .section {
-    margin: 50px 250px;
+    margin: 50px 10vw;
 }
 
 .card-link {

@@ -1,0 +1,16 @@
+* {
+    --delete: #c3413f;
+    --edit: #116199;
+}
+
+.btn-delete {
+    background-color: var(--delete);
+}
+
+.btn-edit {
+    background-color: var(--edit);
+}
+
+.color-main{
+    color: var(--main-color);
+}

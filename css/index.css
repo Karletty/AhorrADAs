@@ -1,0 +1,24 @@
+@media screen and (max-width: 1000px) {
+    .section {
+        margin: 50px 2vw;
+    }
+}
+@media screen and (max-width: 780px) {
+    #s-balance{
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .aside{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 0 0 25px 0;
+    }
+    .container{
+        width: 80%;
+        max-width: none;
+    }
+}

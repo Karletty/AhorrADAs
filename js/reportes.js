@@ -1,2 +1,3 @@
+const btnBalance = $$("btn-report");
 
-navBtns[2].classList.add("selected");
+btnBalance.classList.add("selected");
