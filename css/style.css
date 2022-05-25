@@ -2,12 +2,23 @@
     --main-color: #006D77;
     --hover: #4CA0A0;
     --white: #EDF6F9;
-    --gain: #06d6a0;
-    --spent: #ef476e;
+    --green: #06d6a0;
+    --red2: #ef476e;
     --link: #4361ee;
+    --red: #c3413f;
+    --blue: #116199;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+
+.btn-red {
+    background-color: var(--red);
+}
+
+.btn-blue {
+    background-color: var(--blue);
 }
 
 body {
@@ -20,10 +31,12 @@ body {
 
 .bg-main {
     background-color: var(--main-color);
-    /*padding: 15px 25px;
+}
+
+.navbar {
     position: sticky;
     top: 0;
-    z-index: 100;*/
+    z-index: 100;
 }
 
 .header-img {
@@ -55,7 +68,8 @@ body {
 }
 
 .btn-aqua {
-    width: 175px;
+    background-color: var(--main-color);
+    min-width: 175px;
     font-size: 22px;
     font-weight: bold;
 }
@@ -69,10 +83,11 @@ a {
     text-decoration: none;
 }
 
-button, .nav-btn {
+button,
+.nav-btn {
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
     border-radius: 20px;
-    padding: 10px;
+    padding: 10px 15px;
     margin: 0 10px;
     border: none;
     outline: none;
@@ -83,7 +98,8 @@ button, .nav-btn {
     text-align: center;
 }
 
-button:hover, .nav-btn:hover {
+button:hover,
+.nav-btn:hover {
     transform: scale(1.05);
     transition: 300ms;
 }
@@ -128,11 +144,11 @@ span {
 }
 
 #sp-gain {
-    color: var(--gain);
+    color: var(--green);
 }
 
 #sp-spent {
-    color: var(--spent);
+    color: var(--red2);
 }
 
 #sp-total {
@@ -143,19 +159,22 @@ span {
     margin: 5px 0;
 }
 
-.btn-add-operation,
+
 .btn-add-category {
-    background-color: var(--main-color);
     font-size: 15px;
 }
 
-.btn-add-operation .icon {
-    font-size: 15px;
+p {
+    margin-bottom: 0;
 }
 
 .aside {
     min-width: 300px;
     margin-right: 25px;
+}
+
+i {
+    margin: 0 10px;
 }
 
 .margin-bottom-25 {

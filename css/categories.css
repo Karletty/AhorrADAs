@@ -1,16 +1,8 @@
-* {
-    --delete: #c3413f;
-    --edit: #116199;
-}
-
-.btn-delete {
-    background-color: var(--delete);
-}
-
-.btn-edit {
-    background-color: var(--edit);
-}
-
-.color-main{
+.color-main {
     color: var(--main-color);
+}
+
+.card-hover:hover {
+    padding: 0 0 0 10px;
+    border-left: 4px solid var(--main-color);
 }

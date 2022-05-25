@@ -1,3 +1,3 @@
-const btnBalance = $$("btn-report");
+const btnBalance = $$('btn-report');
 
-btnBalance.classList.add("selected");
+btnBalance.classList.add('selected');

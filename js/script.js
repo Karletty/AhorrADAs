@@ -19,36 +19,36 @@ class Category {
     }
 }
 
-const createNav = () => {
-    const body = $("body");
+const CreateNav = () => {
+    const body = $('body');
     const nav = `
-    <nav class="navbar navbar-expand-lg bg-main" id="navbar">
-        <div class="container-fluid d-flex justify-content-between">
-            <a class="navbar-brand title d-flex flex-row align-items-center" href="#">
-                <img src="images/billetera.png" alt="billetera" class="header-img">
-                <h1 class="title">AhorrADAs</h1>
+    <nav class='navbar navbar-expand-lg bg-main' id='navbar'>
+        <div class='container-fluid d-flex justify-content-between'>
+            <a class='navbar-brand title d-flex flex-row align-items-center' href='#'>
+                <img src='images/billetera.png' alt='billetera' class='header-img'>
+                <h1 class='title'>AhorrADAs</h1>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <img src="images/lista.png" alt="" class="header-img">
+            <button class='navbar-toggler' type='button' data-bs-toggle='collapse'
+                data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false'
+                aria-label='Toggle navigation'>
+                <img src='images/lista.png' alt='' class='header-img'>
             </button>
         </div>
-            <div class="collapse navbar-collapse w-100" id="navbarSupportedContent">
-                <ul class="navbar-nav mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a href="index.html" class="btn-aqua nav-btn" id="btn-balance">
-                            <i class="fa-solid fa-chart-line icon"></i>Balance
+            <div class='collapse navbar-collapse w-100' id='navbarSupportedContent'>
+                <ul class='navbar-nav mb-2 mb-lg-0'>
+                    <li class='nav-item'>
+                        <a href='index.html' class='btn-aqua nav-btn' id='btn-balance'>
+                            <i class='fa-solid fa-chart-line icon'></i>Balance
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="category.html" class="btn-aqua nav-btn" id="btn-category">
-                            <i class="fa-solid fa-tag icon"></i>Categorías
+                    <li class='nav-item'>
+                        <a href='category.html' class='btn-aqua nav-btn' id='btn-category'>
+                            <i class='fa-solid fa-tag icon'></i>Categorías
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="report.html" class="btn-aqua nav-btn" id="btn-report"><i
-                                class="fa-solid fa-chart-pie icon"></i>Reportes</a>
+                    <li class='nav-item'>
+                        <a href='report.html' class='btn-aqua nav-btn' id='btn-report'><i
+                                class='fa-solid fa-chart-pie icon'></i>Reportes</a>
                     </li>
                 </ul>
             </div>
@@ -56,13 +56,58 @@ const createNav = () => {
     body.innerHTML = nav + body.innerHTML;
 }
 
-createNav();
-
-const saveLocalStorage = (ops, cats) => {
-    localStorage.setItem("data", JSON.stringify({ ops, cats }));
+const SaveLocalStorage = (ops, cats) => {
+    localStorage.setItem('data', JSON.stringify({ ops, cats }));
 }
 
-const getLocalStorage = (cat, op) => {
-    let data = JSON.parse(localStorage.getItem("data"));
+const GetLocalStorage = () => {
+    let data = JSON.parse(localStorage.getItem('data'));
     return data;
 }
+
+const GetCategory = (id) => {
+    let categories = GetLocalStorage().cats;
+    let name = '';
+    if (categories.length > 0) {
+        categories.forEach(category => {
+            if (category.id === id) {
+                name = category.name;
+            }
+        });
+        return name;
+    }
+}
+
+const AddCategory = name => {
+    let category = new Category(nanoid(), name);
+    let categories = [];
+    let operations = [];
+    if (GetLocalStorage() !== null) {
+        categories = GetLocalStorage().cats;
+        operations = GetLocalStorage().ops;
+    }
+    categories.push(category);
+    SaveLocalStorage(operations, categories);
+}
+
+const ChangeVisibility = (element, state) => {
+    if (state === 'toggle') {
+        element.classList.toggle('d-none');
+    }
+    if (state === 'remove') {
+        element.classList.remove('d-none')
+    }
+    if (state == 'add') {
+        element.classList.add('d-none');
+    }
+}
+
+if (!GetLocalStorage()) {
+    AddCategory('Comida');
+    AddCategory('Servicios');
+    AddCategory('Salidas');
+    AddCategory('Educación');
+    AddCategory('Transporte');
+    AddCategory('Trabajo');
+}
+CreateNav();
