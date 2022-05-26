@@ -105,24 +105,6 @@ const InitialCategories = () => {
     }
 }
 
-const ChangeFormat = (date, join, number) => {
-    if (typeof (date) === 'object') {
-        const day = (`0${date.getDate()}`).slice(-2);
-        const month = (`0${date.getMonth() + 1}`).slice(-2);
-        const year = date.getFullYear();
-        if (number === 2) {
-            return [year, month, day].join(join);
-        }
-        else {
-            return [day, month, year].join(join)
-        }
-    }
-    else {
-        date = date.split('-');
-        return new Date(Number(date[0]), Number(date[1] - 1), Number(date[2]));;
-    }
-}
-
 const Start = () => {
     const filterDate = $$('filter-date');
     const inputDate = $$('input-date');
@@ -146,7 +128,7 @@ const ChangeSelect = (select, value) => {
     }
 }
 
-const PutInputs = id => {
+const PutInputs = (id) => {
     let operation = GetLocalStorage().ops.find(op => op.id === id);
     const inputDescription = $$('input-description');
     const inputCant = $$('input-cant');
@@ -162,7 +144,7 @@ const PutInputs = id => {
     ChangeSelect(selectType, operation.type);
 }
 
-const EditOperation = id => {
+const EditOperation = (id) => {
     const btnEditOp = $$('btn-edit-operation');
     ChangeWindows(2);
     PutInputs(id);
@@ -189,7 +171,6 @@ const EditOperation = id => {
                     return op;
                 }
             });
-            console.log(operations)
             SaveLocalStorage(operations, GetLocalStorage().cats)
             RefreshOperations();
             ChangeWindows(1);
@@ -197,18 +178,29 @@ const EditOperation = id => {
     });
 }
 
-const DeleteOperation = id => {
-    let data = GetLocalStorage();
-    let operations = data.ops;
+const DeleteOperation = (id) => {
+    let operations = GetLocalStorage().ops;
     operations = operations.filter(op => op.id !== id);
-    SaveLocalStorage(operations, data.cats);
+    SaveLocalStorage(operations, GetLocalStorage().cats);
+    operations = GetLocalStorage().ops;
     RefreshOperations();
 }
 
+const RefreshBalance = () => {
+    const spanGain = $$('sp-gain');
+    const spanSpent = $$('sp-spent');
+    const spanTotal = $$('sp-total');
+    let values = GetBalance(operations);
+    spanGain.innerText = `+$${values.gain}`;
+    spanSpent.innerText = `-$${values.spent}`;
+    spanTotal.innerText = `$${values.gain - values.spent}`
+}
+
 const RefreshOperations = () => {
+    operations = GetLocalStorage().ops;
+    RefreshBalance()
     const tBodyOps = $$('t-body-ops');
     tBodyOps.innerHTML = '';
-    const operations = GetLocalStorage().ops;
     if (operations.length > 0) {
         operations.forEach(operation => {
             let date = ChangeFormat(operation.date, '/', 1);

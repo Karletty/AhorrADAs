@@ -78,6 +78,39 @@ const GetCategory = (id) => {
     }
 }
 
+const GetBalance = operations => {
+    let spents = 0;
+    let gains = 0;
+
+    operations.forEach(operation => {
+        if (operation.type === 'spent') {
+            spents += Number(operation.cantity);
+        }
+        else {
+            gains += Number(operation.cantity);
+        }
+    });
+    return { spent: spents, gain: gains }
+}
+
+const ChangeFormat = (date, join, number) => {
+    if (typeof (date) === 'object') {
+        const day = (`0${date.getDate()}`).slice(-2);
+        const month = (`0${date.getMonth() + 1}`).slice(-2);
+        const year = date.getFullYear();
+        if (number === 2) {
+            return [year, month, day].join(join);
+        }
+        else {
+            return [day, month, year].join(join)
+        }
+    }
+    else {
+        date = date.split('-');
+        return new Date(Number(date[0]), Number(date[1] - 1), Number(date[2]));;
+    }
+}
+
 const AddCategory = name => {
     let category = new Category(nanoid(), name);
     let categories = [];
