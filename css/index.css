@@ -11,6 +11,13 @@ th {
     font-weight: 400;
 }
 
+.color-red {
+    color: var(--red);
+}
+
+.toast-header, .toast-body{
+    background-color: #ffffff;
+}
 
 .btn-blue,
 .btn-red {
@@ -19,6 +26,11 @@ th {
 
 .w-60 {
     max-width: 60%;
+}
+
+.toast-header .btn-close {
+    box-shadow: none;
+    min-width: auto;
 }
 
 .t-row:hover {

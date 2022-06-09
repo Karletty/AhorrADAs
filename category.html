@@ -15,13 +15,49 @@
 </head>
 
 <body>
+    <nav class='navbar navbar-expand-lg bg-main' id='navbar'>
+        <div class='container-fluid d-flex justify-content-between'>
+            <a class='navbar-brand title d-flex flex-row align-items-center' href='#'>
+                <img src='images/billetera.png' alt='billetera' class='header-img'>
+                <h1 class='title'>Presupuesto</h1>
+            </a>
+            <button class='navbar-toggler' type='button' data-bs-toggle='collapse'
+                data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false'
+                aria-label='Toggle navigation'>
+                <img src='images/lista.png' alt='' class='header-img'>
+            </button>
+        </div>
+        <div class='collapse navbar-collapse w-100' id='navbarSupportedContent'>
+            <ul class='navbar-nav mb-2 mb-lg-0'>
+                <li class='nav-item'>
+                    <a href='index.html' class='btn-aqua nav-btn' id='btn-balance'>
+                        <i class='fa-solid fa-chart-line icon'></i>Balance
+                    </a>
+                </li>
+                <li class='nav-item'>
+                    <a href='category.html' class='btn-aqua nav-btn' id='btn-category'>
+                        <i class='fa-solid fa-tag icon'></i>Categorías
+                    </a>
+                </li>
+                <li class='nav-item'>
+                    <a href='report.html' class='btn-aqua nav-btn' id='btn-report'><i
+                            class='fa-solid fa-chart-pie icon'></i>Reportes</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
     <!--CATEGORÍAS, AGREGAR CATEGORÍA-->
     <section class='section d-flex justify-content-center' id='s-category'>
         <div class='container card d-flex flex-column justify-content-center'>
             <h2>Categorías</h2>
             <label for='name' class='fw-bold filter-margin'>Nombre</label>
-            <div class='d-flex'>
-                <input type='text' name='name' id='category-name' class='form-control' autocomplete='off'>
+            <div class='d-flex align-items-start'>
+                <div class='d-flex w-100 flex-column'>
+                    <input type='text' name='name' id='category-name' class='form-control' autocomplete='off'>
+                    <div class='invalid-feedback'>
+                        Debe de ingresar un nombre a la categoría
+                    </div>
+                </div>
                 <button class='btn-aqua btn-add-category d-flex align-items-center justify-content-center'>
                     <i class='fa-solid fa-plus icon'></i>Agregar</button>
             </div>
@@ -36,6 +72,9 @@
             <h2><i class='fa-solid fa-pencil'></i>Editar categoría</h2>
             <label for='name' class='fw-bold filter-margin'>Nombre</label>
             <input type='text' name='name' id='edit-category-name' class='form-control' autocomplete='off'>
+            <div class='invalid-feedback'>
+                Debe de ingresar un nombre a la categoría
+            </div>
             <div class='d-flex align-self-end margin-top-25'>
                 <button class='btn-red' id='btn-cancel-edit'>Cancelar</button>
                 <button class='btn-blue' id='btn-accept-edit'>Editar</button>

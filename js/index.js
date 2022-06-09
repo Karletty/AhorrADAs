@@ -1,11 +1,10 @@
-const btnHideFilters = $$('hide-filters');
-const filtersContainer = $$('filters');
 const btnBalance = $$('btn-balance');
 const btnChangeWindows = $$('btn-change-add');
 const btnAddOp = $$('btn-add-operation');
 const btnCancelAdd = $$('btn-cancel-add-op');
 
 btnBalance.classList.add('selected');
+
 
 const CleanInputs = () => {
     const inputDescription = $$('input-description');
@@ -44,42 +43,27 @@ const ChangeWindows = (type) => {
         ChangeVisibility(btnEdit, 'remove');
     }
 }
-
-const PutCategories = select => {
-    let data = GetLocalStorage();
-    data.cats.forEach(category => {
-        const op = document.createElement('option');
-        op.setAttribute('value', category.id);
-        op.appendChild(document.createTextNode(category.name));
-        select.appendChild(op);
-    });
-}
-
 const AddOperation = (description, cant, type, categoryId, date) => {
     let operation = new Operation(nanoid(), description, cant, type, categoryId, date);
+    let ops = GetLocalStorage().operations;
+    ops.push(operation);
+    let { gain, spent } = GetBalance(ops);
+    if ((gain - spent) > 0) {
+        ChangeWindows(1);
+        SaveOperations(operation);
+        RefreshOperations();
+        InitialOperations();
+    }
+    else {
+        const toastLiveExample = $('#msg-not-enough');
+        const toast = new bootstrap.Toast(toastLiveExample);
+        toast.show()
+    }
     let categories = [];
     let operations = [];
     if (GetLocalStorage() !== null) {
-        categories = GetLocalStorage().cats;
-        operations = GetLocalStorage().ops;
-    }
-    operations.push(operation);
-    SaveLocalStorage(operations, categories);
-}
-
-const InitialOperations = () => {
-    let data = GetLocalStorage();
-    if (data) {
-        const divNoOp = $$('d-no-operations');
-        const divOps = $$('d-operations');
-        if (data.ops.length > 0) {
-            divNoOp.classList.add('d-none');
-            divOps.classList.remove('d-none');
-        }
-        else {
-            divNoOp.classList.remove('d-none');
-            divOps.classList.add('d-none');
-        }
+        categories = GetLocalStorage().categories;
+        operations = GetLocalStorage().operations;
     }
 }
 
@@ -91,29 +75,6 @@ const ValidateInputs = (des, cant) => {
         return false;
     }
     return true;
-}
-
-const InitialCategories = () => {
-    let data = GetLocalStorage();
-    if (data) {
-        const selectCat = $$('select-category');
-        const filterCat = $$('filter-category');
-        if (data.cats.length > 0) {
-            PutCategories(selectCat);
-            PutCategories(filterCat);
-        }
-    }
-}
-
-const Start = () => {
-    const filterDate = $$('filter-date');
-    const inputDate = $$('input-date');
-    let today = new Date();
-    today = ChangeFormat(today, '-', 2);
-    inputDate.value = today;
-    filterDate.value = today;
-    InitialCategories();
-    InitialOperations();
 }
 
 const ChangeSelect = (select, value) => {
@@ -129,7 +90,7 @@ const ChangeSelect = (select, value) => {
 }
 
 const PutInputs = (id) => {
-    let operation = GetLocalStorage().ops.find(op => op.id === id);
+    let operation = GetLocalStorage().operations.find(op => op.id === id);
     const inputDescription = $$('input-description');
     const inputCant = $$('input-cant');
     const inputDate = $$('input-date');
@@ -148,7 +109,7 @@ const EditOperation = (id) => {
     const btnEditOp = $$('btn-edit-operation');
     ChangeWindows(2);
     PutInputs(id);
-    let operations = GetLocalStorage().ops;
+    let operations = GetLocalStorage().operations;
     btnEditOp.addEventListener('click', () => {
         const description = $$('input-description').value;
         const cant = $$('input-cant').value;
@@ -167,11 +128,10 @@ const EditOperation = (id) => {
                     op.type = type;
                     op.category = category;
                     op.date = date;
-                    console.log(op);
                     return op;
                 }
             });
-            SaveLocalStorage(operations, GetLocalStorage().cats)
+            SaveLocalStorage(operations, GetLocalStorage().categories)
             RefreshOperations();
             ChangeWindows(1);
         }
@@ -179,55 +139,57 @@ const EditOperation = (id) => {
 }
 
 const DeleteOperation = (id) => {
-    let operations = GetLocalStorage().ops;
+    let operations = GetLocalStorage().operations;
     operations = operations.filter(op => op.id !== id);
-    SaveLocalStorage(operations, GetLocalStorage().cats);
-    operations = GetLocalStorage().ops;
+    SaveLocalStorage(operations, GetLocalStorage().categories);
+    operations = GetLocalStorage().operations;
     RefreshOperations();
+    InitialOperations();
 }
 
 const RefreshBalance = () => {
     const spanGain = $$('sp-gain');
     const spanSpent = $$('sp-spent');
     const spanTotal = $$('sp-total');
-    let values = GetBalance(operations);
-    spanGain.innerText = `+$${values.gain}`;
-    spanSpent.innerText = `-$${values.spent}`;
-    spanTotal.innerText = `$${values.gain - values.spent}`
+    let { gain, spent } = GetBalance(operations);
+    spanGain.innerText = `+$${gain}`;
+    spanSpent.innerText = `-$${spent}`;
+    spanTotal.innerText = `$${gain - spent}`
 }
 
 const RefreshOperations = () => {
-    operations = GetLocalStorage().ops;
+    operations = GetOperations();
     RefreshBalance()
     const tBodyOps = $$('t-body-ops');
-    tBodyOps.innerHTML = '';
+    while (tBodyOps.firstChild) {
+        tBodyOps.removeChild(tBodyOps.firstChild);
+    }
     if (operations.length > 0) {
-        operations.forEach(operation => {
-            let date = ChangeFormat(operation.date, '/', 1);
+        operations.forEach(({ id, description, cantity, type, category, date }) => {
+            date = ChangeFormat(ChangeFormat(date, '/', 1), '/', 1);
             const tableRow = document.createElement('tr');
-
+            const values = [description, GetCategory(category), date, `${type === 'spent' ? '-' : '+'}$${Number(cantity)}`, ''];
+            values.forEach((value, i) =>{
+                const cell = document.createElement('td');
+                if(i === 4) {
+                    createBtnsActions(cell);
+                }
+                else{
+                    if(i === 3){
+                        cell.setAttribute('class', type)
+                    }
+                    cell.appendChild(document.createTextNode(value));
+                }
+                tableRow.appendChild(cell);
+            })
             tableRow.setAttribute('class', 't-row');
-            date = ChangeFormat(date, '/', 1);
-            tableRow.innerHTML = `
-            <th>${operation.description}</th>
-            <th>${GetCategory(operation.category)}</th>
-            <th>${date}</th>
-            <th class='${operation.type}'>${operation.type === 'spent' ? '-' : '+'}$${operation.cantity}</th>
-            <th>
-                <button type='button' class='btn-blue'>Editar</button>
-                <button type='button' class='btn-red'>Eliminar</button>
-            </th>
-            `;
 
-            const btnEdit = tableRow.querySelector('.btn-blue');
-            const btnDelete = tableRow.querySelector('.btn-red');
-
-            btnEdit.addEventListener('click', () => {
-                EditOperation(operation.id);
+            tableRow.querySelector('.btn-blue').addEventListener('click', () => {
+                EditOperation(id);
             });
 
-            btnDelete.addEventListener('click', () => {
-                DeleteOperation(operation.id);
+            tableRow.querySelector('.btn-red').addEventListener('click', () => {
+                DeleteOperation(id);
             });
 
             tBodyOps.appendChild(tableRow)
@@ -247,9 +209,6 @@ btnAddOp.addEventListener('click', () => {
     category = category.options[indexCat].value;
     if (ValidateInputs(description, cant)) {
         AddOperation(description, cant, type, category, date);
-        ChangeWindows(1);
-        RefreshOperations();
-        InitialOperations();
     }
 });
 
@@ -261,9 +220,4 @@ btnCancelAdd.addEventListener('click', () => {
     ChangeWindows(1);
 });
 
-btnHideFilters.addEventListener('click', () => {
-    ChangeVisibility(filtersContainer, 'toggle');
-});
-
-Start();
 RefreshOperations();

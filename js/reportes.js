@@ -10,6 +10,7 @@ let categoriesGain;
 let monthsName;
 let monthsSpent;
 let monthsGain;
+
 const RemoveRepetition = (array, type) => {
     if (type === 1) {
         return array.filter((e, i) => {
@@ -20,11 +21,15 @@ const RemoveRepetition = (array, type) => {
         let filtered = [];
         array.forEach(e => {
             if (filtered.length > 0) {
+                let isInArray = false;
                 for (let i = 0; i < filtered.length; i++) {
-                    if (filtered[i][0] !== e[0] || filtered[i][1] !== e[1]) {
-                        filtered.push(e);
-                        return;
+                    if (filtered[i][0] === e[0] && filtered[i][1] === e[1]) {
+                        isInArray = true;
+                        break;
                     }
+                }
+                if (!isInArray) {
+                    filtered.push(e);
                 }
             }
             else {
@@ -71,74 +76,50 @@ const GetMonthBalance = ([month, year]) => {
     return { spent: spents, gain: gains }
 }
 
-const PutTotMonths = () => {
-    const dTotMonth = $$('d-tot-mes');
-    const table = document.createElement('table');
-    let rows = '';
-    table.setAttribute('class', 'table');
-    for (let i = 0; i < months.length; i++) {
-        rows += `
-            <tr>
-                <td>${monthsName[i]}</td>
-                <td class='gain'>+$${monthsGain[i]}</td>
-                <td class='spent'>-$${monthsSpent[i]}</td>
-                <td>$${monthsGain[i] - monthsSpent[i]}</td>
-            </tr>`;
+const CreateTableRows = ({ names, spents, gains }, tBody) => {
+    for (let i = 0; i < names.length; i++) {
+        let row = document.createElement('tr');
+        let values = [names[i], `+$${gains[i]}`, `-$${spents[i]}`, `$${gains[i] - spents[i]}`];
+        values.forEach((value, i) => {
+            let cell = document.createElement('td');
+            cell.appendChild(document.createTextNode(value));
+            i === 1 ? cell.classList.add('gain') : i === 2 ? cell.classList.add('spent') : '';
+            row.appendChild(cell);
+        });
+        tBody.appendChild(row)
     }
-    table.innerHTML = `
-    <thead>
-        <tr>
-            <th scope='col' class='fw-bold'>Mes</th>
-            <th scope='col' class='fw-bold'>Ganancias</th>
-            <th scope='col' class='fw-bold'>Gastos</th>
-            <th scope='col' class='fw-bold'>Balance</th>
-        </tr>
-    </thead>
-    <tbody>
-        ${rows}
-    </tbody>`;
+}
 
-    dTotMonth.appendChild(table);
+const PutTotMonths = () => {
+    const table = $$('table-tot-mes');
+    const tBody = table.querySelector('tbody');
+    while (tBody.firstChild) {
+        tBody.removeChild(tBody.firstChild);
+    }
+    CreateTableRows({ names: monthsName, spents: monthsSpent, gains: monthsGain }, tBody);
 }
 
 const PutTotCategories = () => {
-    const dTotCat = $$('d-tot-cats');
-    const table = document.createElement('table');
-    let rows = '';
-    table.setAttribute('class', 'table');
-    for (let i = 0; i < categoriesName.length; i++) {
-        rows += `
-        <tr>
-            <td>${categoriesName[i]}</td>
-            <td class='gain'>+$${categoriesGain[i]}</td>
-            <td class='spent'>-$${categoriesSpent[i]}</td>
-            <td>$${categoriesGain[i] - categoriesSpent[i]}</td>
-        </tr>`;
+    const table = $$('table-tot-cats');
+    const tBody = table.querySelector('tbody');
+    while (tBody.firstChild) {
+        tBody.removeChild(tBody.firstChild);
     }
-    table.innerHTML = `
-    <thead>
-        <tr>
-            <th scope='col' class='fw-bold'>Categoría</th>
-            <th scope='col' class='fw-bold'>Ganancias</th>
-            <th scope='col' class='fw-bold'>Gastos</th>
-            <th scope='col' class='fw-bold'>Balance</th>
-        </tr>
-    </thead>
-    <tbody>
-        ${rows}
-    </tbody>`;
-
-    dTotCat.appendChild(table);
+    CreateTableRows({ names: categoriesName, spents: categoriesSpent, gains: categoriesGain }, tBody);
 }
 
 const CreateRow = (description, data) => {
-    let txt = `
-        <div class='row margin-bottom-25'>
-            <div class='col fw-bold'>${description}</div>
-            <div class='col text-end'>${data[0]}</div>
-            <div class='col ${data[2]} text-end'>${data[2] === 'spent' ? '-' : data[2] === 'gain' ? '+' : ''}$${data[1]}</div>
-        </div>`;
-    return txt;
+    let divRow = document.createElement('div');
+    divRow.classList.add('row', 'margin-bottom-25', 'w-100');
+    let values = [description, data[0], `${data[2] === 'spent' ? '-' : data[2] === 'gain' ? '+' : ''}$${data[1]}`];
+    let classes = ['col fw-bold', 'col text-center', `col text-end ${data[2]}`];
+    values.forEach((value, i) => {
+        let divElement = document.createElement('div');
+        divElement.setAttribute('class', classes[i]);
+        divElement.appendChild(document.createTextNode(value));
+        divRow.appendChild(divElement);
+    })
+    return divRow;
 }
 
 const GetHighest = (array, names, type) => {
@@ -181,19 +162,19 @@ const PutResume = () => {
     const dResume = $$('d-resume');
     const div = document.createElement('div');
     div.setAttribute('class', 'container w-100');
-    div.innerHTML += CreateRow('Categoría con mayor ganancia', GetHighestEarningCat());
-    div.innerHTML += CreateRow('Categoría con mayor gasto', GetHighestSpendingCat());
-    div.innerHTML += CreateRow('Categoría con mayor balance', GetHighestBalanceCat());
-    div.innerHTML += CreateRow('Mes con mayor ganancia', GetHighestEarningMonth());
-    div.innerHTML += CreateRow('Mes con mayor gasto', GetHighestSpendingMonth());
+    let txtArray = ['Categoría con mayor ganancia', 'Categoría con mayor gasto', 'Categoría con mayor balance', 'Mes con mayor ganancia', 'Mes con mayor gasto'];
+    let valueArray = [GetHighestEarningCat(), GetHighestSpendingCat(), GetHighestBalanceCat(), GetHighestEarningMonth(), GetHighestSpendingMonth()];
+    txtArray.forEach((txt, i) => {
+        div.append(CreateRow(txt, valueArray[i]))
+    })
     dResume.appendChild(div);
 }
 
 if (GetLocalStorage()) {
-    if (GetLocalStorage().ops.length > 2) {
+    if (GetLocalStorage().operations.length > 2) {
         ChangeVisibility(dNoReport, 'add');
         ChangeVisibility(dReports, 'remove');
-        operations = GetLocalStorage().ops
+        operations = GetLocalStorage().operations
         months = operations.map(op => {
             let date = ChangeFormat(op.date);
             return [date.getMonth(), date.getFullYear()];
@@ -206,7 +187,7 @@ if (GetLocalStorage()) {
         months = RemoveRepetition(months, 2);
         categoriesName = categories.map(cat => {
             let name = ''
-            GetLocalStorage().cats.forEach((category) => {
+            GetLocalStorage().categories.forEach((category) => {
                 if (cat == category.id) {
                     name = category.name;
                 }
