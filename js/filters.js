@@ -107,7 +107,6 @@ const FilterParam = (paramName, operations) => {
     return operations
 }
 const OrderByParam = ([first, orderType], operations) => {
-    console.log([first, orderType], operations)
     if (first === 'upward') {
         operations = operations.sort((next, actual) => {
             let vNext = next[orderType];
@@ -117,21 +116,38 @@ const OrderByParam = ([first, orderType], operations) => {
                     vNext = ChangeFormat(vNext);
                     vActual = ChangeFormat(vActual);
                 }
-                else{
+                else {
                     vNext = Number(vNext);
                     vActual = Number(vActual);
                 }
                 return vNext > vActual ? -1 : vNext < vActual ? 1 : 0;
             }
-            else{
+            else {
                 const collator = new Intl.Collator('en');
                 return collator.compare(vNext, vActual);
             }
         });
-        console.log(operations)
     }
     else {
-
+        operations = operations.sort((next, actual) => {
+            let vNext = next[orderType];
+            let vActual = actual[orderType];
+            if (orderType !== 'description') {
+                if (orderType === 'date') {
+                    vNext = ChangeFormat(vNext);
+                    vActual = ChangeFormat(vActual);
+                }
+                else {
+                    vNext = Number(vNext);
+                    vActual = Number(vActual);
+                }
+                return vNext < vActual ? -1 : vNext > vActual ? 1 : 0;
+            }
+            else {
+                const collator = new Intl.Collator('en');
+                return collator.compare(vNext, vActual) * -1;
+            }
+        });
     }
     return operations
 }
