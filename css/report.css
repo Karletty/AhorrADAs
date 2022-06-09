@@ -1,0 +1,55 @@
+.spent {
+    color: var(--red2);
+}
+
+.card {
+    padding: 50px 100px;
+}
+
+.gain {
+    color: var(--green);
+}
+
+.w-60 {
+    max-width: 60%;
+}
+
+.w-40 {
+    max-width: 300px;
+    max-height: 300px;
+}
+
+.reports {
+    padding: 0 3vw;
+}
+
+table {
+    border: 1px solid #00000057;
+}
+
+#d-report {
+    width: 75%;
+}
+
+#d-report div {
+    width: 100%;
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 780px) {
+    .card {
+        padding: 50px 3vw;
+    }
+
+    #d-no-report {
+        width: 100%;
+    }
+
+    #d-report div {
+        justify-content: center;
+    }
+
+    .w-60 {
+        max-width: 100%;
+    }
+}

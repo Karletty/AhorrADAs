@@ -12,7 +12,6 @@
     box-sizing: border-box;
 }
 
-
 .btn-red {
     background-color: var(--red);
 }
@@ -114,7 +113,7 @@ button:hover,
 }
 
 
-.container {
+.card {
     margin: 0;
     border-radius: 20px;
     padding: 40px 20px;

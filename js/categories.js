@@ -19,8 +19,9 @@ const EditCategory = id => {
     const btnEdit = sEditC.querySelector('#btn-accept-edit');
     const btnCancel = sEditC.querySelector('#btn-cancel-edit');
     let data = GetLocalStorage();
-    let categories = data.cats;
+    let categories = data.categories;
 
+    inputName.classList.remove('is-invalid')
     ChangeWindows();
 
     inputName.value = categories.find(item => item.id === id).name;
@@ -37,10 +38,13 @@ const EditCategory = id => {
                     return item
                 }
             });
-            SaveLocalStorage(GetLocalStorage().ops, categories);
+            SaveLocalStorage(GetLocalStorage().operations, categories);
             RefreshCategories();
             ChangeVisibility(sCategory, 'remove');
             ChangeVisibility(sEditC, 'add');
+        }
+        else {
+            inputName.classList.add('is-invalid')
         }
     });
 
@@ -48,36 +52,45 @@ const EditCategory = id => {
 
 const DeleteCategory = id => {
     let data = GetLocalStorage();
-    let categories = data.cats;
+    let categories = data.categories;
     categories = categories.filter(item => item.id !== id);
-    SaveLocalStorage(data.ops, categories);
+    SaveLocalStorage(data.operations, categories);
     RefreshCategories();
 }
 
 const RefreshCategories = () => {
     const divCategories = $$('d-categories');
-    divCategories.innerHTML = '';
-    const categories = GetLocalStorage().cats;
+    while (divCategories.firstChild) {
+        divCategories.removeChild(divCategories.firstChild);
+    }
+    const categories = GetLocalStorage().categories;
     if (categories.length > 0) {
-        categories.forEach(category => {
+        categories.forEach(({ id, name }) => {
             const divCategory = document.createElement('div');
-            divCategory.setAttribute('class', 'd-flex justify-content-between flex-row margin-top-25 margin-bottom-25 align-items-center card-hover');
-            divCategory.innerHTML = `
-            <div class='d-flex align-items-center'>
-                <p class='color-main'>${category.name}</p>
-            </div>
-            <div>
-                <button type='button' class='btn-blue'>Editar</button>
-                <button type='button' class='btn-red'>Eliminar</button>
-            </div>
-            `;
+            const divContainer = document.createElement('div');
+            const divBtns = document.createElement('div');
+            const catName = document.createElement('p');
 
-            divCategory.querySelector('.btn-blue').addEventListener('click', () => {
-                EditCategory(category.id);
+            createBtnsActions(divBtns)
+
+            divCategory.setAttribute('class', 'd-flex justify-content-between flex-row margin-top-25 margin-bottom-25 align-items-center card-hover');
+            divContainer.setAttribute('class', 'd-flex align-items-center');
+            catName.setAttribute('class', 'color-main');
+            catName.appendChild(document.createTextNode(name));
+            divContainer.appendChild(catName);
+            divCategory.appendChild(divContainer);
+            divCategory.appendChild(divBtns);
+
+            divBtns.querySelector('.btn-blue').addEventListener('click', () => {
+                const categoryName = $('#category-name');
+                categoryName.classList.remove('is-invalid');
+                EditCategory(id);
             });
 
-            divCategory.querySelector('.btn-red').addEventListener('click', () => {
-                DeleteCategory(category.id);
+            divBtns.querySelector('.btn-red').addEventListener('click', () => {
+                const categoryName = $('#category-name');
+                categoryName.classList.remove('is-invalid');
+                DeleteCategory(id);
             });
 
             divCategories.appendChild(divCategory);
@@ -89,9 +102,13 @@ btnAddCategory.addEventListener('click', () => {
     const categoryName = $('#category-name');
     const name = categoryName.value;
     if (name.length !== 0) {
+        categoryName.classList.remove('is-invalid');
         AddCategory(name);
         RefreshCategories();
         categoryName.value = '';
+    }
+    else {
+        categoryName.classList.add('is-invalid');
     }
 });
 

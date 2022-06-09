@@ -18,46 +18,22 @@ class Category {
         this.name = name;
     }
 }
-
-const CreateNav = () => {
-    const body = $('body');
-    const nav = `
-    <nav class='navbar navbar-expand-lg bg-main' id='navbar'>
-        <div class='container-fluid d-flex justify-content-between'>
-            <a class='navbar-brand title d-flex flex-row align-items-center' href='#'>
-                <img src='images/billetera.png' alt='billetera' class='header-img'>
-                <h1 class='title'>AhorrADAs</h1>
-            </a>
-            <button class='navbar-toggler' type='button' data-bs-toggle='collapse'
-                data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false'
-                aria-label='Toggle navigation'>
-                <img src='images/lista.png' alt='' class='header-img'>
-            </button>
-        </div>
-            <div class='collapse navbar-collapse w-100' id='navbarSupportedContent'>
-                <ul class='navbar-nav mb-2 mb-lg-0'>
-                    <li class='nav-item'>
-                        <a href='index.html' class='btn-aqua nav-btn' id='btn-balance'>
-                            <i class='fa-solid fa-chart-line icon'></i>Balance
-                        </a>
-                    </li>
-                    <li class='nav-item'>
-                        <a href='category.html' class='btn-aqua nav-btn' id='btn-category'>
-                            <i class='fa-solid fa-tag icon'></i>Categorías
-                        </a>
-                    </li>
-                    <li class='nav-item'>
-                        <a href='report.html' class='btn-aqua nav-btn' id='btn-report'><i
-                                class='fa-solid fa-chart-pie icon'></i>Reportes</a>
-                    </li>
-                </ul>
-            </div>
-    </nav>`;
-    body.innerHTML = nav + body.innerHTML;
+const SaveOperations = newOperation => {
+    SaveData(newOperation, 'operations');
 }
 
-const SaveLocalStorage = (ops, cats) => {
-    localStorage.setItem('data', JSON.stringify({ ops, cats }));
+const SaveCategory = newCategory => {
+    SaveData(newCategory, 'categories');
+}
+
+const SaveData = (newData, type) => {
+    let data = GetLocalStorage();
+    data[type].push(newData);
+    localStorage.setItem('data', JSON.stringify({ operations: data.operations, categories: data.categories }))
+}
+
+const SaveLocalStorage = (operations, categories) => {
+    localStorage.setItem('data', JSON.stringify({ operations, categories }));
 }
 
 const GetLocalStorage = () => {
@@ -66,7 +42,7 @@ const GetLocalStorage = () => {
 }
 
 const GetCategory = (id) => {
-    let categories = GetLocalStorage().cats;
+    let categories = GetLocalStorage().categories;
     let name = '';
     if (categories.length > 0) {
         categories.forEach(category => {
@@ -78,16 +54,49 @@ const GetCategory = (id) => {
     }
 }
 
+const GetBalance = operations => {
+    let spents = 0;
+    let gains = 0;
+
+    operations.forEach(({ type, cantity }) => {
+        if (type === 'spent') {
+            spents += Number(cantity);
+        }
+        else {
+            gains += Number(cantity);
+        }
+    });
+    return { spent: spents, gain: gains }
+}
+
+const ChangeFormat = (date, join, number) => {
+    if (typeof (date) === 'object') {
+        const day = (`0${date.getDate()}`).slice(-2);
+        const month = (`0${date.getMonth() + 1}`).slice(-2);
+        const year = date.getFullYear();
+        if (number === 2) {
+            return [year, month, day].join(join);
+        }
+        else {
+            return [day, month, year].join(join)
+        }
+    }
+    else {
+        date = date.split('-');
+        return new Date(Number(date[0]), Number(date[1] - 1), Number(date[2]));;
+    }
+}
+
 const AddCategory = name => {
     let category = new Category(nanoid(), name);
     let categories = [];
     let operations = [];
     if (GetLocalStorage() !== null) {
-        categories = GetLocalStorage().cats;
-        operations = GetLocalStorage().ops;
+        SaveCategory(category);
     }
-    categories.push(category);
-    SaveLocalStorage(operations, categories);
+    else {
+        SaveLocalStorage(operations, [...categories, category]);
+    }
 }
 
 const ChangeVisibility = (element, state) => {
@@ -102,6 +111,18 @@ const ChangeVisibility = (element, state) => {
     }
 }
 
+const createBtnsActions = container => {
+    const btnEdit = document.createElement('button');
+    const btnDelete = document.createElement('button');
+    btnEdit.setAttribute('class', 'btn-blue');
+    btnDelete.setAttribute('class', 'btn-red');
+    btnEdit.appendChild(document.createTextNode('Editar'));
+    btnDelete.appendChild(document.createTextNode('Eliminar'));
+    container.appendChild(btnEdit);
+    container.appendChild(btnDelete);
+}
+
+
 if (!GetLocalStorage()) {
     AddCategory('Comida');
     AddCategory('Servicios');
@@ -110,4 +131,3 @@ if (!GetLocalStorage()) {
     AddCategory('Transporte');
     AddCategory('Trabajo');
 }
-CreateNav();
