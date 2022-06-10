@@ -1,0 +1,19 @@
+.color-main {
+    color: var(--main-color);
+}
+
+.card-hover:hover {
+    padding: 0 0 0 10px;
+    border-left: 4px solid var(--main-color);
+}
+
+@media screen and (max-width: 785px) {
+
+    #d-categories .card-hover,
+    .media-screen {
+        flex-direction: column;
+    }
+    .media-screen .btn-aqua{
+        margin-top: 25px;
+    }
+}
