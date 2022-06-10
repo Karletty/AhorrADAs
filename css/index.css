@@ -38,15 +38,8 @@ th {
     border-left: 5px solid var(--main-color);
 }
 
-.card-body#d-operations {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 0 2rem;
-    border-radius: 0 0 0.25rem 0.25rem;
-    padding: 0;
-    flex: 1 1 auto;
+.card-body{
+    width: 100%;
     overflow-x: scroll;
 }
 
@@ -83,7 +76,6 @@ th {
 
     .container {
         width: 80%;
-        max-width: none;
     }
 
     .w-60 {
