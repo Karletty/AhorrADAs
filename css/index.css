@@ -49,11 +49,13 @@ th {
     flex: 1 1 auto;
     overflow-x: scroll;
 }
+
 .card.d-operation {
     justify-content: center;
     align-items: center;
 }
-#d-operations .table{
+
+#d-operations .table {
     overflow-x: scroll;
 }
 
