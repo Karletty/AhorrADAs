@@ -79,7 +79,7 @@ const GetMonthBalance = ([month, year]) => {
 const CreateTableRows = ({ names, spents, gains }, tBody) => {
     for (let i = 0; i < names.length; i++) {
         let row = document.createElement('tr');
-        let values = [names[i], `+$${gains[i]}`, `-$${spents[i]}`, `$${gains[i] - spents[i]}`];
+        let values = [names[i], `+$${gains[i]}`, `-$${spents[i]}`, `$${Math.round((gains[i] - spents[i]) * 100) / 100}`];
         values.forEach((value, i) => {
             let cell = document.createElement('td');
             cell.appendChild(document.createTextNode(value));
