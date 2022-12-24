@@ -60,10 +60,10 @@ const GetBalance = operations => {
 
     operations.forEach(({ type, cantity }) => {
         if (type === 'spent') {
-            spents += Math.round(cantity * 100);
+            spents += Math.round(cantity * 100) / 100;
         }
         else {
-            gains += Math.round(cantity * 100);
+            gains += Math.round(cantity * 100) / 100;
         }
     });
     return { spent: spents, gain: gains }
