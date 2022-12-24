@@ -49,14 +49,14 @@ const GetCategoryBalance = id => {
     operations.forEach(operation => {
         if (operation.category === id) {
             if (operation.type === 'spent') {
-                spents += Math.round(operation.cantity * 100) / 100;
+                spents += Number(operation.cantity);
             }
             else {
-                gains += Math.round(operation.cantity * 100) / 100;
+                gains += Number(operation.cantity);
             }
         }
     });
-    return { spent: spents, gain: gains }
+    return { spent: Math.round(spents * 100) / 100, gain: Math.round(gains * 100) / 100 }
 }
 
 const GetMonthBalance = ([month, year]) => {
@@ -66,14 +66,14 @@ const GetMonthBalance = ([month, year]) => {
         let date = ChangeFormat(operation.date);
         if (date.getMonth() === month && date.getFullYear() === year) {
             if (operation.type === 'spent') {
-                spents += Math.round(operation.cantity * 100) / 100;
+                spents += Number(operation.cantity);
             }
             else {
-                gains += Math.round(operation.cantity * 100) / 100;
+                gains += Number(operation.cantity);
             }
         }
     });
-    return { spent: spents, gain: gains }
+    return { spent: Math.round(spents * 100) / 100, gain: Math.round(gains * 100) / 100 }
 }
 
 const CreateTableRows = ({ names, spents, gains }, tBody) => {

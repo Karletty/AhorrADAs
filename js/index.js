@@ -154,7 +154,7 @@ const RefreshBalance = () => {
     let { gain, spent } = GetBalance(operations);
     spanGain.innerText = `+$${gain}`;
     spanSpent.innerText = `-$${spent}`;
-    spanTotal.innerText = `$${gain - spent}`
+    spanTotal.innerText = `$${Math.round((gain - spent) * 100) / 100}`
 }
 
 const RefreshOperations = () => {
@@ -169,16 +169,16 @@ const RefreshOperations = () => {
             date = ChangeFormat(ChangeFormat(date, '/', 1), '/', 1);
             const tableRow = document.createElement('tr');
             const values = [description, GetCategory(category), date, `${type === 'spent' ? '-' : '+'}$${Number(cantity)}`, ''];
-            values.forEach((value, i) =>{
+            values.forEach((value, i) => {
                 const cell = document.createElement('td');
-                if(i === 1) {
-                    cell.setAttribute('scope','row');
+                if (i === 1) {
+                    cell.setAttribute('scope', 'row');
                 }
-                if(i === 4) {
+                if (i === 4) {
                     createBtnsActions(cell);
                 }
-                else{
-                    if(i === 3){
+                else {
+                    if (i === 3) {
                         cell.setAttribute('class', type)
                     }
                     cell.appendChild(document.createTextNode(value));

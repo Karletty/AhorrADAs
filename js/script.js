@@ -5,7 +5,7 @@ class Operation {
     constructor(id, des, cant, type, cat, date) {
         this.id = id;
         this.description = des;
-        this.cantity = cant;
+        this.cantity = Math.round(cant * 100) / 100;
         this.type = type;
         this.category = cat;
         this.date = date;
@@ -60,13 +60,13 @@ const GetBalance = operations => {
 
     operations.forEach(({ type, cantity }) => {
         if (type === 'spent') {
-            spents += Math.round(cantity * 100) / 100;
+            spents += Number(cantity);
         }
         else {
-            gains += Math.round(cantity * 100) / 100;
+            gains += Number(cantity);
         }
     });
-    return { spent: spents, gain: gains }
+    return { spent: Math.round(spents * 100) / 100, gain: Math.round(gains * 100) / 100 }
 }
 
 const ChangeFormat = (date, join, number) => {
